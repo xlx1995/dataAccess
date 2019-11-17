@@ -10,4 +10,6 @@ public interface RoleMapper {
 
     List<Role> listRole();
 
+    int delete(int id);
+
 }

@@ -13,6 +13,9 @@
 		SELECT * from ROLE
 	</select>
 
+	<delete id="delete" parameterType="int">
+		delete from role where id = #{id}
+	</delete>
 
 	
 </mapper>

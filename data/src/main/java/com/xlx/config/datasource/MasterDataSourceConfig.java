@@ -1,17 +1,24 @@
 package com.xlx.config.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.mysql.cj.jdbc.MysqlXADataSource;
+import com.xlx.util.DataSourceUtil;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jta.atomikos.AtomikosDataSourceBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
 
 /**
  * @author xlx
@@ -22,22 +29,24 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 @MapperScan(basePackages = "com.xlx.mapper.miaosha", sqlSessionTemplateRef = "masterSqlSessionTemplate")
 public class MasterDataSourceConfig {
 
+    @Autowired
+    private MasterConfig masterConfig;
+
     @Bean(name = "masterDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.master")
+    public DataSource setDataSource() throws SQLException {
+        DataSourceConfig dataSourceConfig = new DataSourceConfig(masterConfig.getUrl(),masterConfig.getUsername(),masterConfig.getPassword(),masterConfig.getPlatform(),masterConfig.getMinIdle(),masterConfig.getMaxActive(),masterConfig.getValidationQuery());
+        return DataSourceUtil.createDataSource(dataSourceConfig,"masterDataSource");
 
-    public DruidDataSource setDataSource() {
-        return new DruidDataSource();
     }
 
-    @Bean(name = "masterTransactionManager")
-
-    public DataSourceTransactionManager setTransactionManager(@Qualifier("masterDataSource") DruidDataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
-    }
+//    @Bean(name = "masterTransactionManager")
+//    public DataSourceTransactionManager setTransactionManager(@Qualifier("masterDataSource") DataSource dataSource) {
+//        return new DataSourceTransactionManager(dataSource);
+//    }
 
     @Bean(name = "masterSqlSessionFactory")
 
-    public SqlSessionFactory setSqlSessionFactory(@Qualifier("masterDataSource") DruidDataSource dataSource) throws Exception {
+    public SqlSessionFactory setSqlSessionFactory(@Qualifier("masterDataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(setDataSource());
         bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mappers/xlx/*.xml"));
@@ -45,7 +54,6 @@ public class MasterDataSourceConfig {
     }
 
     @Bean(name = "masterSqlSessionTemplate")
-
     public SqlSessionTemplate setSqlSessionTemplate(@Qualifier("masterSqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory);
     }

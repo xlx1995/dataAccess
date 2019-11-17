@@ -14,7 +14,7 @@ spring:
       password: 123456
       platform: mysql
     #通过这句配置将druid连接池引入到我们的配置中，spring会尽可能判断类型是什么，然后根据情况去匹配驱动类。
-    slave1:
+    slavel:
       url: jdbc:mysql://localhost:3306/blog?&useSSL=false&serverTimezone=UTC
       driver-class-name: com.mysql.cj.jdbc.Driver  # mysql8.0以前使用com.mysql.jdbc.Driver
       username: root

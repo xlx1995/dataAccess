@@ -13,8 +13,10 @@
 		SELECT * FROM T_USERINFO WHERE USER_ID = #{user_id}
 	</select>
 
-	<insert id="insertUser" parameterType="int">
-		INSERT INTO T_USERINFO (USER_ID,USER_NAME,USER_PASSWORD) VALUES (#{user_id},#{user_name},#{user_password})
+	<insert id="insertUser" parameterType="com.xlx.db.pojo.User">
+		INSERT INTO t_userinfo (user_name, user_gender, user_age, user_telphone, regist_mode, thrid_party_id)
+		VALUES
+		(#{user_name}, #{user_gender}, #{user_age}, #{user_telphone}, #{regist_mode}, #{thrid_party_id});
 	</insert>
 
 	<select id="listUser" resultType="com.xlx.db.pojo.User">
