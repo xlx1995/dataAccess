@@ -3,12 +3,16 @@ package com.xlx.config;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import org.apache.zookeeper.Login;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +21,34 @@ import java.util.List;
  * @Date: 2019/8/4 17:14
  * @Description:
  */
+@Configuration
 public class WebConfig implements WebMvcConfigurer {
     // WebMvcConfigurerAdapter 这个类在SpringBoot2.0已过时，官方推荐直接实现WebMvcConfigurer 这个接口
+
+    /**
+     * @return 登录验证拦截器
+     * 自定义登录验证拦截器
+     */
+    @Bean
+    public LoginInterceptor needLoginInterceptor() {
+        return new LoginInterceptor();
+    }
+
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        InterceptorRegistration interceptorRegistration = registry.addInterceptor(needLoginInterceptor());
+        interceptorRegistration.excludePathPatterns("/static/**");
+        interceptorRegistration.addPathPatterns("/**");
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        WebMvcConfigurer.super.addViewControllers(registry);
+        //前一个是请求路径，后一个是首页名
+        registry.addViewController("/").setViewName("index.html");
+        registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
+    }
 
     /**
      * 实现跨域请求

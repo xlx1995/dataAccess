@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xlx.mapper.miaosha.TeacherMapper">
+
+	<resultMap id="TeacherResultMap" type="com.xlx.db.pojo.master.TeacherDo">
+		<result property="teacherId" column="teacher_id"></result>
+		<result property="teacherName" column="teacher_name"></result>
+		<result property="teacherAge" column="teacher_age"></result>
+		<result property="teacherPhone" column="teacher_age"></result>
+		<result property="schoolId" column="school_id"></result>
+		<result property="schoolName" column="school_name"></result>
+		<collection column="{teacher_id = teacher_id}"  property="studentDoList"  ofType="java.util.List" select="com.xlx.mapper.miaosha.StudentMapper.findById"/>
+	</resultMap>
+
+    <!-- 配置该映射接口中的所有查询使用二级缓存 -->
+    <cache></cache>
+
+	<select id="query" parameterType="Map" resultMap="TeacherResultMap">
+		select t.*,t1.school_name
+		from tb_teacher t
+		left JOIN tb_school t1 on t.school_id = t1.school_id
+		where 1=1
+		<include refid="condition"/>
+	</select>
+
+	<sql id="condition">
+		<if test="teacherId != null and teacherId != '' ">
+			AND teacher_id = #{teacherId}
+		</if>
+	</sql>
+
+
+</mapper>

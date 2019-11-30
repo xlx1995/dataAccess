@@ -1,5 +1,6 @@
 package com.xlx.init;
 
+import com.xlx.config.datasource.MasterConfig;
 import com.xlx.kafka.SendCallback;
 import com.xlx.kafka.factory.KafkaProducerFactory;
 import org.apache.kafka.clients.producer.Producer;
@@ -34,7 +35,7 @@ public class InitPro {
 
     @PostConstruct
     public void init() {
-        System.out.println("url:----" + url);
+        System.out.println("你好");
 //        Runnable runnable = () -> {
 //            Producer<String, String> kafkaProducer = kafkaProducerFactory.getKafkaProducer();
 //            kafkaProducer.send(new ProducerRecord<>("user", "aaaa","aaaa"), (SendCallback) (metadata, exception) -> {

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xlx.mapper.miaosha.SchoolMapper">
+
+	<resultMap id="schoolResultMap" type="com.xlx.db.pojo.master.SchoolDo">
+		<result property="schoolId" column="school_id"></result>
+		<result property="schoolName" column="school_name"></result>
+		<result property="schoolArea" column="school_area"></result>
+	</resultMap>
+
+    <!-- 配置该映射接口中的所有查询使用二级缓存 -->
+    <cache></cache>
+
+	<select id="query" resultMap="schoolResultMap" parameterType="Map">
+		select * from Tb_School
+		where 1=1
+		<include refid="condition"/>
+	</select>
+
+
+	<sql id="condition">
+		<if test="schoolId != null and schoolId != '' ">
+			AND school_id = #{schoolId}
+		</if>
+	</sql>
+
+
+
+
+</mapper>
