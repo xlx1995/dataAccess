@@ -1,5 +1,6 @@
 package com.xlx.db.pojo;
 
+import com.baidu.bjf.remoting.protobuf.annotation.Protobuf;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

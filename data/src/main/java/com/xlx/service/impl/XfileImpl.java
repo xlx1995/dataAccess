@@ -1,5 +1,6 @@
 package com.xlx.service.impl;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.xlx.service.Callback;
 import com.xlx.service.Xfile;
 import com.xlx.util.ReMessage;
@@ -19,10 +20,12 @@ public class XfileImpl implements Xfile {
     @Autowired
     private Executor taskExecutor;
 
+    ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
+            .setNameFormat("demo-pool-%d").build();
 
     public ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(8, 16,
             60L, TimeUnit.SECONDS,
-            new SynchronousQueue<Runnable>());
+            new SynchronousQueue<>(),namedThreadFactory);
 
 
 
